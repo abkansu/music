@@ -1,5 +1,6 @@
 package com.abkansu.music.album.service;
 
+import com.abkansu.music.album.controller.dto.AlbumResponseDTO;
 import com.abkansu.music.album.controller.dto.CreateAlbumRequestDTO;
 import com.abkansu.music.album.controller.dto.UpdateAlbumRequestDTO;
 import com.abkansu.music.album.entity.Album;
@@ -15,11 +16,16 @@ import java.util.List;
 public class AlbumService {
     private final AlbumRepository albumRepository;
 
-    public HttpStatus createAlbum(CreateAlbumRequestDTO createAlbumRequestDTO) {
+    public AlbumResponseDTO createAlbum(CreateAlbumRequestDTO createAlbumRequestDTO) {
         albumRepository.save(
                 fromCreateAlbumRequestDTO(createAlbumRequestDTO)
         );
-        return HttpStatus.CREATED;
+        return AlbumResponseDTO
+                .builder()
+                .status(HttpStatus.CREATED)
+                .message("Successfully Created")
+                .statusCode(201)
+                .build();
     }
 
     public List<Album> getAlbums() {
@@ -31,14 +37,20 @@ public class AlbumService {
         var album = albumRepository.findById(id).orElseThrow();
         albumRepository.delete(album);
         return HttpStatus.OK;
+
     }
 
-    public HttpStatus updateAlbum(UpdateAlbumRequestDTO updateAlbumRequestDTO) {
+    public AlbumResponseDTO updateAlbum(UpdateAlbumRequestDTO updateAlbumRequestDTO) {
         Album album = albumRepository.findById(updateAlbumRequestDTO.getId()).orElseThrow();
         albumRepository.save(
                 fromUpdateAlbumRequestDTO(album, updateAlbumRequestDTO)
         );
-        return HttpStatus.OK;
+        return AlbumResponseDTO
+                .builder()
+                .status(HttpStatus.OK)
+                .message("Successfully Updated")
+                .statusCode(200)
+                .build();
     }
 
     public Album getAlbum(Long id){

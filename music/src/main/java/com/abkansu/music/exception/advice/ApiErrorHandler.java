@@ -53,5 +53,4 @@ public class ApiErrorHandler {
                 .build();
         return new ResponseEntity<>(apiErrorResponse, httpStatus);
     }
-
 }

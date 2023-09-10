@@ -3,6 +3,8 @@ package com.abkansu.music.album.entity;
 import com.abkansu.music.song.entity.Song;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import java.util.Set;
 
@@ -24,6 +26,7 @@ public class Album {
     private String band;
 
     @OneToMany(mappedBy = "album")
+    @Cascade(CascadeType.ALL)
     private Set<Song> songs;
 
 }

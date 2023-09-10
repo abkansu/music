@@ -5,7 +5,6 @@
     <title>Hello World App</title>
     <link th:href="@{/css/index.css}" rel="stylesheet">
     <script th:inline="javascript">
-
         function validateText(element, text){
             console.log(text);
             if(text.length > 255 || text.length === 0){
@@ -165,22 +164,21 @@
             let response = await fetch(url, { method : 'DELETE' })
             if(response.ok){
                 const element = document.getElementById("song-row" + songId);
+                document.getElementById("song-id-delete").value = "";
                 element.remove();
             }
         }
 
-        async function deleteAlbum(){
+        function deleteAlbum(){
             const albumId = document.getElementById("album-id-delete").value;
             const albumIdValidate = validateId(document.getElementById("album-id-delete"), albumId);
             const url = "http://localhost:8080/api/v1/album/" + albumId;
             if(!albumIdValidate){
                 return;
             }
-            let response = await fetch(url, { method : 'DELETE' })
-            if(response.ok){
-                const element = document.getElementById("album-row" + albumId);
-                element.remove();
-            }
+            fetch(url, { method : 'DELETE' })
+                .then(() => location.reload())
+
         }
     </script>
 </head>
@@ -282,6 +280,7 @@
     <div class="panel">
         <div class="panel-piece">
             <table th:id="album-table">
+                <caption>List of all the albums</caption>
                 <tr>
                     <th>Album ID</th>
                     <th>Album Name</th>
@@ -303,6 +302,7 @@
         </div>
         <div class="panel-piece">
             <table>
+                <caption>List of all the songs</caption>
                 <tr>
                     <th>Song ID</th>
                     <th>Song Name</th>

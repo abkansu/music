@@ -20,7 +20,7 @@ public class IndexController {
     private final AlbumService albumService;
 
     @GetMapping
-    public String hello(Model model){
+    public String index(Model model){
         List<Album> albums = albumService.getAlbums();
         List<Song> songs = songService.getSongs();
         model.addAttribute("albums", albums);

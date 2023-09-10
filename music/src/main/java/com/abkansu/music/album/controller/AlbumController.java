@@ -1,5 +1,6 @@
 package com.abkansu.music.album.controller;
 
+import com.abkansu.music.album.controller.dto.AlbumResponseDTO;
 import com.abkansu.music.album.controller.dto.CreateAlbumRequestDTO;
 import com.abkansu.music.album.controller.dto.UpdateAlbumRequestDTO;
 import com.abkansu.music.album.entity.Album;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.abkansu.music.validations.Validations.validateCreateAlbumRequestDTO;
+import static com.abkansu.music.validations.Validations.validateUpdateAlbumRequestDTO;
+
 @RestController
 @RequestMapping("/api/v1/album")
 @RequiredArgsConstructor
@@ -18,9 +22,10 @@ public class AlbumController {
 
 
     @PostMapping
-    public HttpStatus createAlbum(
+    public AlbumResponseDTO createAlbum(
             @RequestBody CreateAlbumRequestDTO createAlbumRequestDTO
     ){
+        if (!validateCreateAlbumRequestDTO(createAlbumRequestDTO)) throw new IllegalArgumentException();
         return albumService.createAlbum(createAlbumRequestDTO);
     }
 
@@ -30,9 +35,10 @@ public class AlbumController {
     }
 
     @PutMapping
-    public HttpStatus updateAlbum(
+    public AlbumResponseDTO updateAlbum(
             @RequestBody UpdateAlbumRequestDTO updateAlbumRequestDTO
     ){
+        if (!validateUpdateAlbumRequestDTO(updateAlbumRequestDTO)) throw new IllegalArgumentException();
         return albumService.updateAlbum(updateAlbumRequestDTO);
     }
 

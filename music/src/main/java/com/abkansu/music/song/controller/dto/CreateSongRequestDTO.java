@@ -2,7 +2,7 @@ package com.abkansu.music.song.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Size;
+
 import lombok.Data;
 import lombok.NonNull;
 
@@ -12,7 +12,7 @@ public class CreateSongRequestDTO {
 
     @JsonCreator
     public CreateSongRequestDTO(
-            @JsonProperty("name") @NonNull @Size(min = 1, max = 255) String name
+            @JsonProperty("name") @NonNull String name
     ){
         this.name = name;
     }

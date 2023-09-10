@@ -3,6 +3,7 @@ package com.abkansu.music.song.service;
 import com.abkansu.music.album.service.AlbumService;
 import com.abkansu.music.song.controller.dto.AddSongRequestDTO;
 import com.abkansu.music.song.controller.dto.CreateSongRequestDTO;
+import com.abkansu.music.song.controller.dto.SongResponseDTO;
 import com.abkansu.music.song.controller.dto.UpdateSongRequestDTO;
 import com.abkansu.music.song.entity.Song;
 import com.abkansu.music.song.repository.SongRepository;
@@ -22,20 +23,30 @@ public class SongService {
         return songRepository.findAll();
     }
 
-    public HttpStatus createSong(CreateSongRequestDTO createSongRequestDTO) {
+    public SongResponseDTO createSong(CreateSongRequestDTO createSongRequestDTO) {
         Song song = Song
                 .builder()
                 .name(createSongRequestDTO.getName())
                 .build();
         songRepository.save(song);
-        return HttpStatus.CREATED;
+        return SongResponseDTO
+                .builder()
+                .status(HttpStatus.CREATED)
+                .message("SuccessFully Created")
+                .statusCode(201)
+                .build();
     }
 
-    public HttpStatus updateSong(UpdateSongRequestDTO updateSongRequestDTO) {
+    public SongResponseDTO updateSong(UpdateSongRequestDTO updateSongRequestDTO) {
         var song = songRepository.findById(updateSongRequestDTO.getId()).orElseThrow();
         song.setName(updateSongRequestDTO.getName());
         songRepository.save(song);
-        return HttpStatus.ACCEPTED;
+        return SongResponseDTO
+                .builder()
+                .status(HttpStatus.OK)
+                .message("Successfully Updated")
+                .statusCode(200)
+                .build();
     }
 
     public HttpStatus deleteSong(Long id) {
@@ -44,11 +55,16 @@ public class SongService {
         return HttpStatus.OK;
     }
 
-    public HttpStatus addSongToAlbum(AddSongRequestDTO addSongRequestDTO) {
+    public SongResponseDTO addSongToAlbum(AddSongRequestDTO addSongRequestDTO) {
         var song = songRepository.findById(addSongRequestDTO.getSongId()).orElseThrow();
         var album = albumService.getAlbum(addSongRequestDTO.getAlbumId());
         song.setAlbum(album);
         songRepository.save(song);
-        return HttpStatus.ACCEPTED;
+        return SongResponseDTO
+                .builder()
+                .status(HttpStatus.OK)
+                .message("Successfully Updated")
+                .statusCode(200)
+                .build();
     }
 }
