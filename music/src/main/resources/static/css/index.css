@@ -1,0 +1,54 @@
+input{
+    width: 80%;
+    height: 20px;
+    outline: none;
+    border: black 1px solid;
+    border-radius: 8px;
+}
+
+table{
+    border: black 1px solid;
+}
+
+th, td{
+    border: black 1px solid;
+    width: 25%;
+}
+
+
+.add-album{
+    height: 350px;
+}
+
+.add-song{
+    height: 150px;
+}
+
+.add-song-to-album{
+    height: 200px;
+}
+.panel-piece{
+    width: 48%;
+}
+.add-panel{
+    margin: 2px;
+    border: black 1px solid;
+    border-radius: 8px;
+    padding: 2px;
+}
+
+.input-component{
+    margin: 2px;
+}
+
+.panel{
+    display: flex;
+}
+
+.update-album{
+    height: 250px;
+}
+
+.update-song{
+    height: 250px;
+}

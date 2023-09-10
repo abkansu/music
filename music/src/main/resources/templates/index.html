@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World App</title>
+    <link th:href="@{/css/index.css}" rel="stylesheet">
+    <script th:inline="javascript">
+
+        function validateText(element, text){
+            console.log(text);
+            if(text.length > 255 || text.length === 0){
+                element.style.setProperty("border-color", "red");
+                return false;
+            }
+            return true;
+        }
+        function validateId(element, number){
+            if(number < 1){
+                element.style.setProperty("border-color", "red");
+                return false;
+            }
+            return true;
+        }
+
+        function validateYear(element, number){
+            if(number < 1600 || number > 2023){
+                element.style.setProperty("border-color", "red");
+                return false;
+            }
+            return true;
+        }
+
+        function createAlbum(){
+            const name = document.getElementById("album-name-create").value;
+            const year = document.getElementById("album-year-create").value;
+            const band = document.getElementById("album-band-create").value;
+            const nameValidate = validateText(document.getElementById("album-name-create"), name);
+            const yearValidate = validateYear(document.getElementById("album-year-create"), year);
+            const bandValidate = validateText(document.getElementById("album-band-create"), band);
+
+            if(!(nameValidate && yearValidate && bandValidate)){
+                return;
+            }
+            const url = "http://localhost:8080/api/v1/album"
+            const data = {
+                name: name,
+                publishYear: year,
+                band: band
+            }
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => location.reload())
+                .catch((err) => console.log(err));
+        }
+
+        function updateAlbum(){
+            const name = document.getElementById("album-name-update").value;
+            const id = document.getElementById("album-id-update").value;
+            const year = document.getElementById("album-year-update").value;
+            const band = document.getElementById("album-band-update").value;
+            const nameValidate = validateText(document.getElementById("album-name-update"), name);
+            const yearValidate = validateYear(document.getElementById("album-year-update"), year);
+            const bandValidate = validateText(document.getElementById("album-band-update"), band);
+            const idValidate = validateId(document.getElementById("album-id-update"), id);
+
+            if(!(nameValidate && yearValidate && bandValidate && idValidate)){
+                return
+            }
+            const url = "http://localhost:8080/api/v1/album"
+            const data = {
+                id: id,
+                name: name,
+                publishYear: year,
+                band: band
+            }
+            fetch(url, {
+                method: 'PUT',
+                body: JSON.stringify(data),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => location.reload())
+                .catch((err) => console.log(err));
+        }
+
+        function createSong(){
+            const name = document.getElementById("song-name-create").value;
+            const nameValidate = validateText(document.getElementById("song-name-create"), name);
+            const data = {
+                name: name
+            }
+            const url = "http://localhost:8080/api/v1/song"
+            if(!nameValidate){
+                return;
+            }
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => location.reload())
+                .catch((err) => console.log(err));
+        }
+
+        function updateSong(){
+            const name = document.getElementById("song-name-update").value;
+            const songId = document.getElementById("song-id-update").value;
+            const nameValidate = validateText(document.getElementById("song-name-update"), name);
+            const songIdValidate = validateId(document.getElementById("song-id-update"), songId);
+
+            if(!(nameValidate && songIdValidate)){
+                return
+            }
+            const data = {
+                name: name,
+                id: songId
+            }
+            const url = "http://localhost:8080/api/v1/song"
+            fetch(url, {
+                method: 'PUT',
+                body: JSON.stringify(data),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => location.reload())
+                .catch((err) => console.log(err));
+        }
+
+        function addSong(){
+            const songId = document.getElementById("add-song-id").value;
+            const albumId = document.getElementById("add-album-id").value;
+            const songIdValidate = validateId(document.getElementById("add-song-id"), songId);
+            const albumIdValidate = validateId(document.getElementById("add-album-id"), albumId)
+            if(!(songIdValidate && albumIdValidate)){
+                return
+            }
+            const url = "http://localhost:8080/api/v1/song/add-song"
+            const data = {
+                songId: songId,
+                albumId: albumId
+            }
+
+            fetch(url, {
+                method: 'PUT',
+                body: JSON.stringify(data),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => location.reload())
+                .catch((err) => console.log(err));
+        }
+
+        async function deleteSong(){
+            const songId = document.getElementById("song-id-delete").value;
+            const songIdValidate = validateId(document.getElementById("song-id-delete"), songId);
+            const url = "http://localhost:8080/api/v1/song/" + songId;
+            if(!songIdValidate){
+                return;
+            }
+            let response = await fetch(url, { method : 'DELETE' })
+            if(response.ok){
+                const element = document.getElementById("song-row" + songId);
+                element.remove();
+            }
+        }
+
+        async function deleteAlbum(){
+            const albumId = document.getElementById("album-id-delete").value;
+            const albumIdValidate = validateId(document.getElementById("album-id-delete"), albumId);
+            const url = "http://localhost:8080/api/v1/album/" + albumId;
+            if(!albumIdValidate){
+                return;
+            }
+            let response = await fetch(url, { method : 'DELETE' })
+            if(response.ok){
+                const element = document.getElementById("album-row" + albumId);
+                element.remove();
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <h1 th:text = "'Manage Albums'"></h1>
+    <div class="panel">
+        <div class="panel-piece">
+            <div class="add-panel add-album">
+                <h3 th:text = "'Add Album'"></h3>
+                <div class="input-component">
+                    <label>Album name</label>
+                    <input type="text" th:id="album-name-create"/>
+                </div>
+
+                <div class="input-component">
+                    <label>Published Year</label>
+                    <input type="number" th:id="album-year-create"/>
+                </div>
+                <div class="input-component">
+                    <label>Band</label>
+                    <input type="text" th:id="album-band-create"/>
+                </div>
+                <div style="margin: 5px">
+                    <button th:onclick="createAlbum()" type="submit">Create Album</button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-piece">
+            <div class="add-panel add-song">
+                <h3 th:text = "'Add Song'"></h3>
+                <div class="input-component">
+                    <label>Song name</label>
+                    <input type="text" th:id="song-name-create"/>
+                </div>
+                <div style="margin: 5px">
+                    <button th:onclick="createSong()">Create Song</button>
+                </div>
+            </div>
+            <div class="add-panel add-song-to-album">
+                <h3 th:text = "'Add Song to Album'"></h3>
+                <div class="input-component">
+                    <label>Song id</label>
+                    <input type="number" th:id="add-song-id"/>
+                </div>
+                <div class="input-component">
+                    <label>Album id</label>
+                    <input type="number" th:id="add-album-id"/>
+                </div>
+                <div style="margin: 5px">
+                    <button th:onclick="addSong()">Add Song to Album</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-piece">
+            <div class="add-panel update-album">
+                <h3 th:text = "'Update Album'"></h3>
+                <div class="input-component">
+                    <label>Album ID</label>
+                    <input type="number" th:id="album-id-update"/>
+                </div>
+                <div class="input-component">
+                    <label>Album name</label>
+                    <input type="text" th:id="album-name-update"/>
+                </div>
+
+                <div class="input-component">
+                    <label>Published Year</label>
+                    <input type="number" th:id="album-year-update"/>
+                </div>
+                <div class="input-component">
+                    <label>Band</label>
+                    <input type="text" th:id="album-band-update"/>
+                </div>
+                <div style="margin: 5px">
+                    <button th:onclick="updateAlbum()">Update Album</button>
+                </div>
+            </div>
+        </div>
+        <div class="panel-piece">
+            <div class="add-panel update-song">
+                <h3 th:text = "'Update Song'"></h3>
+                <div class="input-component">
+                    <label>Song ID</label>
+                    <input type="number" th:id="song-id-update"/>
+                </div>
+                <div class="input-component">
+                    <label>Song name</label>
+                    <input type="text" th:id="song-name-update"/>
+                </div>
+                <div style="margin: 5px">
+                    <button th:onclick="updateSong()">Update Song</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-piece">
+            <table th:id="album-table">
+                <tr>
+                    <th>Album ID</th>
+                    <th>Album Name</th>
+                    <th>Album Band</th>
+                    <th>Album Publish Year</th>
+                </tr>
+                <tr th:each="album : ${albums}" th:id="'album-row' + ${album.getId()}">
+                    <td>[[${album.getId()}]]</td>
+                    <td>[[${album.getName()}]]</td>
+                    <td>[[${album.getBand()}]]</td>
+                    <td>[[${album.getPublishYear()}]]</td>
+                </tr>
+            </table>
+            <div style="margin: 5px">
+                <label>Album Id</label>
+                <input type = "number" required th:id="album-id-delete">
+                <button th:onclick="deleteAlbum()">Delete</button>
+            </div>
+        </div>
+        <div class="panel-piece">
+            <table>
+                <tr>
+                    <th>Song ID</th>
+                    <th>Song Name</th>
+                    <th>Album ID</th>
+                </tr>
+                <tr th:each="song : ${songs}" th:id="'song-row' + ${song.getId()}">
+                    <td>[[${song.getId()}]]</td>
+                    <td>[[${song.getName()}]]</td>
+                    <td th:if="${song.getAlbum() != null}">[[${song.getAlbum().getId()}]]</td>
+                </tr>
+            </table>
+            <div style="margin: 5px">
+                <label>Song Id</label>
+                <input type = "number" required th:id="song-id-delete">
+                <button th:onclick="deleteSong()">Delete</button>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
